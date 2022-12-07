@@ -109,3 +109,47 @@ FROM (HoaDonCT JOIN HoaDon ON HoaDonCT.SOHD=HoaDon.SOHD)
 JOIN SanPham ON HoaDonCT.MASP=SanPham.MASP
 WHERE YEAR(HoaDon.NGAYHD)=2001
 GROUP BY SanPham.TENSP;
+
+#Qry 23
+SELECT KhachHang.TenKH,HoaDon.SOHD,HoaDon.NGAYHD,HoaDonCT.SOLUONG,SanPham.DONGIA,SanPham.TENSP,
+       ((1-GIAMGIA/100)*(SOLUONG*DONGIA)) AS ThanhTien
+FROM (KhachHang JOIN HoaDon ON KhachHang.MAKH=HoaDon.MAKH)
+JOIN (SanPham JOIN HoaDonCT ON SanPham.MASP=HoaDonCT.MASP)
+ON HoaDon.SOHD=HoaDonCT.SOHD
+WHERE 'ThanhTien' < 2000000 AND TENSP LIKE '%Tu lanh%';
+
+#Qry 24
+SELECT KhachHang.TENKH,HoaDon.SOHD,HoaDon.NGAYHD,HoaDonCT.SOLUONG,SanPham.DONGIA,SanPham.TENSP,
+       ((1-GIAMGIA/100)*(SOLUONG*DONGIA)) AS ThanhTien
+FROM (KhachHang JOIN HoaDon ON KhachHang.MAKH=HoaDon.MAKH)
+JOIN (SanPham JOIN HoaDonCT ON SanPham.MASP=HoaDonCT.MASP)
+ON HoaDon.SOHD=HoaDonCT.SOHD;
+
+#Qry 25
+SELECT SanPham.TENSP,NhanVien.MABP
+FROM (NhanVien JOIN HoaDon on NhanVien.MANV=HoaDon.MANV)
+JOIN (SanPham JOIN HoaDonCT on SanPham.MASP=HoaDonCT.MASP)
+ON HoaDon.SOHD=HoaDonCT.SOHD
+WHERE NhanVien.MABP='PKD';
+
+#Qry 26
+SELECT KhachHang.TENKH,SanPham.TENSP,HoaDonCT.SOLUONG,HoaDonCT.GIAMGIA
+FROM (KhachHang JOIN HoaDon ON KhachHang.MaKH = HoaDon.MAKH)
+JOIN (SanPham JOIN HoaDonCT ON SanPham.MASP = HoaDonCT.MASP)
+ON HoaDon.SOHD=HoaDonCT.SOHD
+WHERE HoaDonCT.GIAMGIA IN (5,10,25)
+ORDER BY HoaDonCT.GIAMGIA ASC;
+
+#Cau 7
+#Qry 27
+DECLARE @nhanVien VARCHAR(15)
+    SET @nhanVien = 'Ngoc';
+SELECT HoaDon.SOHD,HoaDon.NGAYHD,
+        ((1-GIAMGIA/100)*(SOLUONG*DONGIA)) AS ValueHD
+FROM (NhanVien JOIN HoaDon ON NhanVien.MANV=HoaDon.MANV)
+JOIN (SanPham JOIN HoaDonCT ON SanPham.MASP=HoaDonCT.MASP)
+ON HoaDon.SOHD=HoaDonCT.SOHD
+WHERE NhanVien.TEN= @nhanVien;
+
+
+
