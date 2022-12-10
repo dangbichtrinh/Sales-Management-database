@@ -143,13 +143,39 @@ ORDER BY HoaDonCT.GIAMGIA ASC;
 #Cau 7
 #Qry 27
 DECLARE @nhanVien VARCHAR(15)
-    SET @nhanVien = 'Ngoc';
+    SET @nhanVien ='Phuong';
 SELECT HoaDon.SOHD,HoaDon.NGAYHD,
         ((1-GIAMGIA/100)*(SOLUONG*DONGIA)) AS ValueHD
 FROM (NhanVien JOIN HoaDon ON NhanVien.MANV=HoaDon.MANV)
 JOIN (SanPham JOIN HoaDonCT ON SanPham.MASP=HoaDonCT.MASP)
 ON HoaDon.SOHD=HoaDonCT.SOHD
-WHERE NhanVien.TEN= @nhanVien;
+WHERE NhanVien.TEN=@nhanVien;
 
+#Qry 28
+DECLARE @tenSP VARCHAR(15)
+SET @tenSP ='%Tivi%';
+SELECT HoaDon.SOHD,KhachHang.TENKH,HoaDonCT.SOLUONG,SanPham.DONGIA,SanPham.TENSP,
+       ((1-GIAMGIA/100)*(SOLUONG*DONGIA)) AS ValueHD
+FROM (KhachHang JOIN HoaDon ON KhachHang.MAKH=HoaDon.MAKH)
+         JOIN (SanPham JOIN HoaDonCT ON SanPham.MASP=HoaDonCT.MASP)
+              ON HoaDon.SOHD=HoaDonCT.SOHD
+WHERE TENSP LIKE @tenSP;
 
+#Qry 29
+DECLARE @T1 DATE
+    SET @T1='2000-08-04';
+DECLARE @T2 DATE
+    SET @T2='2001-12-15'
+SELECT KhachHang.TENKH,HoaDonCT.SOLUONG,SanPham.TENSP,NGAYHD
+FROM (KhachHang JOIN HoaDon ON KhachHang.MAKH=HoaDon.MAKH)
+         JOIN (SanPham JOIN HoaDonCT ON SanPham.MASP=HoaDonCT.MASP)
+              ON HoaDon.SOHD=HoaDonCT.SOHD
+WHERE NGAYHD IN
+(SELECT CASE
+    WHEN @T1 <=NGAYHD then NGAYHD else''end
+ FROM HoaDon)
+AND NGAYHD IN
+(select case
+    when @T2 >=NGAYHD then NgayHD else''end
+ from HoaDon);
 
