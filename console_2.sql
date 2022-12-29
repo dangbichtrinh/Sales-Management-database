@@ -179,3 +179,93 @@ AND NGAYHD IN
     when @T2 >=NGAYHD then NgayHD else''end
  from HoaDon);
 
+#Qry 30
+DECLARE @tenBP varchar(3)
+    SET @tenBP='CH1';
+SELECT SUM((1-GIAMGIA/100)*(SOLUONG*DONGIA)) as 'Doanh so',NhanVien.MABP
+from (NhanVien join HoaDon on NhanVien.MANV=HoaDon.MANV)
+join (SanPham join HoaDonCT on SanPham.MASP=HoaDonCT.MASP)
+on HoaDon.SOHD=HoaDOnCT.SOHD
+where MABP=@tenBP
+group by MABP;
+
+#Qry 31
+DECLARE @namHD char(4)
+    SET @namHD='2000';
+select HoaDon.SOHD,SUM((1-GIAMGIA/100)*(SOLUONG*DONGIA)) as 'Doanh so',YEAR(HoaDon.NGAYHD)
+from (HoaDon join HoaDonCT on HoaDon.SOHD=HoaDonCT.SOHD)
+join SanPham on HoaDonCT.MASP=SanPham.MASP
+where YEAR(HoaDon.NGAYHD)=@namHD
+group by YEAR(HoaDon.NGAYHD),HoaDon.SOHD
+
+#Qry 32 Nhan Vien khong ban duoc san pham nao
+select NhanVien.HO,NhanVien.TEN,MANV
+from NhanVien
+where NhanVien.MANV not in
+(select MANV from HoaDon);
+
+#Qry 33 San pham chua ban duoc
+select SanPham.MASP,SanPham.TENSP from SanPham
+where SanPham.MASP not in
+(select MASP from HoaDonCT);
+
+#Cau 8
+#Qry 34
+select HoaDon.SOHD,HoaDon.NGAYHD,KhachHang.TENKH,NhanVien.HO,NhanVien.TEN,
+       SUM((1-GIAMGIA/100)*(SOLUONG*DONGIA)) AS 'Tri gia hoa don'
+from (NhanVien join HoaDon on NhanVien.MaNV = HoaDon.MANV)
+join (SanPham join HoaDonCT on SanPham.MASP=HoaDonCT.MASP)
+Join KhachHang on KhachHang.MAKH=HoaDon.MAKH
+where month(NGAYHD)='08' and year(NGAYHD)='2000'
+group by HoaDon.SOHD;
+
+#Qry 35
+select KhachHang.TENKH,SanPham.TENSP,HoaDonCT.SOLUONG
+from (KhachHang join HoaDon on KhachHang.MaKH = HoaDon.MAKH)
+join (SanPham join HoaDonCT on SanPham.MASP = HoaDonCT.MASP)
+on HoaDon.SOHD=HoaDonCT.SOHD;
+
+#Qry 36
+select top 5 HoaDonCT.SOLUONG,SanPham.TENSP
+from SanPham join HoaDonCT  on SanPham.MASP = HoaDonCT.MASP
+order by HoaDonCT.SOLUONG DESC;
+
+#Qry 37
+select sum((1-GIAMGIA/100)*(SOLUONG*DONGIA)) as 'Doanh so',year(NGAYHD)
+from (HoaDonCT join SanPham on HoaDonCT.MASP = SanPham.MASP)
+join HoaDon on HoaDonCT.SOHD=HoaDon.SOHD
+group by year(NGAYHD);
+
+#Qry 38
+select top 3
+
+#Qry 39
+select NhanVien.MABP,NhanVien.PHAI,BoPhan.TENBP
+sum(1) as 'Tong so nhan vien'
+sum(case when NhanVien.PHAI='M' then 1 else null end) as 'So nhan vien nam'
+sum(case when NhanVien.PHAI='F'then 1 else null end) as 'So nhan vien nu'
+from NhanVien join BoPhan  on NhanVien.MABP = BoPhan.MABP
+group by BoPhan.TENBP;
+
+#Qry 40
+select concat_ws(' ',NhanVien.HO,NhanVien.TEN) as HotenNhanvien,
+       SUM((1-GIAMGIA/100)*(SOLUONG*DONGIA)) as Doanhso
+sum(case when )
+from (NhanVien join HoaDon on NhanVien.MaNV = HoaDon.MANV)
+join (SanPham join HoaDonCT on SanPham.MASP = HoaDonCT.MASP)
+on HoaDon.SOHD=HoaDonCT.SOHD
+group by HotenNhanvien,HoaDon.SOHD;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
